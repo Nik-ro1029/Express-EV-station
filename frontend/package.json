@@ -1,0 +1,16 @@
+{
+  "name": "voltspot-frontend",
+  "version": "1.0.0",
+  "description": "EV charging station frontend (Node.js + Express) that talks to the Flask backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1"
+  }
+}

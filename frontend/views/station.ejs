@@ -1,0 +1,59 @@
+<%- include('partials/header') %>
+<% var free = s.chargers.filter(function (c) { return c.status === 'available'; }); %>
+<a class="back" href="/">← All stations</a>
+<h1><%= s.name %></h1>
+<p class="muted"><%= s.city %><%= (s.city && s.address) ? ' · ' : '' %><%= s.address %> · <%= currency %><%= money(s.price_per_kwh) %>/kWh</p>
+
+<section class="card">
+  <h2>Chargers</h2>
+  <% if (s.chargers.length) { %>
+  <table>
+    <thead><tr><th>ID</th><th>Connector</th><th>Power</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    <% s.chargers.forEach(function (c) { %>
+      <tr>
+        <td><%= c.charger_id %></td>
+        <td><%= c.connector_type %></td>
+        <td><%= c.power_kw %> kW</td>
+        <td><span class="pill <%= c.status %>"><%= c.status %></span></td>
+        <td class="right">
+          <% if (c.status !== 'occupied') { %>
+          <form method="post" action="/station/<%= s._id %>/chargers/<%= c.charger_id %>/status">
+            <input type="hidden" name="status" value="<%= c.status === 'available' ? 'offline' : 'available' %>">
+            <button class="btn ghost small" type="submit"><%= c.status === 'available' ? 'Take offline' : 'Bring online' %></button>
+          </form>
+          <% } %>
+        </td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p class="muted">No chargers yet. Add one below.</p>
+  <% } %>
+</section>
+
+<div class="two-col">
+  <form class="card form" method="post" action="/sessions/start">
+    <h2>Start charging</h2>
+    <input type="hidden" name="station_id" value="<%= s._id %>">
+    <label>Charger
+      <select name="charger_id" required <%= free.length ? '' : 'disabled' %>>
+        <% free.forEach(function (c) { %><option value="<%= c.charger_id %>"><%= c.charger_id %> · <%= c.connector_type %> · <%= c.power_kw %> kW</option><% }); %>
+        <% if (!free.length) { %><option>No free chargers</option><% } %>
+      </select>
+    </label>
+    <label>Vehicle number <input name="vehicle_number" required placeholder="e.g. AB12 CD 3456"></label>
+    <button class="btn" type="submit" <%= free.length ? '' : 'disabled' %>>Start session</button>
+  </form>
+
+  <form class="card form" method="post" action="/station/<%= s._id %>/chargers">
+    <h2>Add a charger</h2>
+    <label>Connector
+      <select name="connector_type"><% types.forEach(function (t) { %><option><%= t %></option><% }); %></select>
+    </label>
+    <label>Power (kW) <input name="power_kw" type="number" step="0.1" min="1" required placeholder="e.g. 60"></label>
+    <button class="btn ghost" type="submit">Add charger</button>
+  </form>
+</div>
+<%- include('partials/footer') %>

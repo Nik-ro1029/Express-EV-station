@@ -1,0 +1,11 @@
+<%- include('partials/header') %>
+<h1>Add a station</h1>
+<form class="card form" method="post" action="/stations/new">
+  <label>Station name <input name="name" required placeholder="e.g. Riverside Hub" value="<%= form.name %>"></label>
+  <label>City <input name="city" placeholder="e.g. Downtown" value="<%= form.city %>"></label>
+  <label>Address <input name="address" placeholder="Street or landmark" value="<%= form.address %>"></label>
+  <label>Price per kWh (<%= currency %>) <input name="price_per_kwh" type="number" step="0.01" min="0" required value="<%= form.price_per_kwh %>"></label>
+  <button class="btn" type="submit">Create station</button>
+  <p class="muted">You can add chargers on the next page.</p>
+</form>
+<%- include('partials/footer') %>

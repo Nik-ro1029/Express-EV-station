@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+<h1>Charging stations</h1>
+<p class="muted">Live availability across your network.</p>
+
+<section class="stats">
+  <div class="stat mint"><span>Stations</span><strong><%= stats.stations %></strong></div>
+  <div class="stat sky"><span>Chargers free</span><strong><%= stats.available %> / <%= stats.chargers %></strong></div>
+  <div class="stat sand"><span>Active sessions</span><strong><%= stats.active_sessions %></strong></div>
+  <div class="stat lilac"><span>Energy delivered</span><strong><%= stats.total_energy_kwh %> kWh</strong></div>
+  <div class="stat rose"><span>Revenue</span><strong><%= currency %><%= stats.total_revenue %></strong></div>
+</section>
+
+<% if (stations.length) { %>
+<section class="grid">
+  <% stations.forEach(function (s) { var free = s.chargers.filter(function (c) { return c.status === 'available'; }).length; %>
+  <a class="card station-card" href="/station/<%= s._id %>">
+    <h3><%= s.name %></h3>
+    <p class="muted"><%= s.city %><%= (s.city && s.address) ? ' · ' : '' %><%= s.address %></p>
+    <div class="row">
+      <span class="pill available"><%= free %> free</span>
+      <span class="pill neutral"><%= s.chargers.length %> chargers</span>
+      <span class="price"><%= currency %><%= money(s.price_per_kwh) %>/kWh</span>
+    </div>
+  </a>
+  <% }); %>
+</section>
+<% } else { %>
+<div class="card empty">No stations yet. <a href="/stations/new">Add your first one</a>.</div>
+<% } %>
+<%- include('partials/footer') %>

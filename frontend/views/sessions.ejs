@@ -1,0 +1,42 @@
+<%- include('partials/header') %>
+<h1>Charging sessions</h1>
+
+<section class="card">
+  <h2>Active now</h2>
+  <% if (active.length) { %>
+  <table>
+    <thead><tr><th>Station</th><th>Charger</th><th>Vehicle</th><th>Started</th><th>Finish session</th></tr></thead>
+    <tbody>
+    <% active.forEach(function (x) { %>
+      <tr>
+        <td><%= x.station_name %></td><td><%= x.charger_id %></td><td><%= x.vehicle_number %></td><td><%= fmtDate(x.started_at) %></td>
+        <td>
+          <form class="inline" method="post" action="/sessions/<%= x._id %>/stop">
+            <input name="energy_kwh" type="number" step="0.01" min="0" required placeholder="kWh delivered">
+            <button class="btn small" type="submit">Stop</button>
+          </form>
+        </td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table>
+  <% } else { %><p class="muted">No vehicles are charging right now.</p><% } %>
+</section>
+
+<section class="card">
+  <h2>History</h2>
+  <% if (history.length) { %>
+  <table>
+    <thead><tr><th>Station</th><th>Vehicle</th><th>Started</th><th>Energy</th><th>Cost</th></tr></thead>
+    <tbody>
+    <% history.forEach(function (x) { %>
+      <tr>
+        <td><%= x.station_name %> · <%= x.charger_id %></td><td><%= x.vehicle_number %></td><td><%= fmtDate(x.started_at) %></td>
+        <td><%= x.energy_kwh %> kWh</td><td><%= currency %><%= money(x.cost) %></td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table>
+  <% } else { %><p class="muted">Completed sessions will show up here.</p><% } %>
+</section>
+<%- include('partials/footer') %>
